@@ -28,8 +28,6 @@ pip install -r requirements.txt
 python scripts/download_data.py  # downloads the 28 CSV files into data/raw/
 ```
 
-**Before contributing, read [GUIDE.md](GUIDE.md).**
-
 ## Repository structure
 
 ```

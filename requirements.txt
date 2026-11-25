@@ -1,0 +1,12 @@
+# Python 3.12. Pinned versions, install with: pip install -r requirements.txt
+# Add a new library only through a PR, with its exact version.
+numpy==2.0.2
+pandas==2.3.3
+pyarrow==19.0.0
+scipy==1.18.1
+scikit-learn==1.9.1
+imbalanced-learn==0.14.2
+statsmodels==0.15.0
+matplotlib==3.11.2
+seaborn==0.13.2
+ipykernel==6.29.5

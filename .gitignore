@@ -1,0 +1,27 @@
+# Data is never committed (211 MB). Get it with: python scripts/download_data.py
+data/*
+!data/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large model files
+*.pkl
+*.joblib
+*.cbm
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local Claude settings
+.claude/settings.local.json

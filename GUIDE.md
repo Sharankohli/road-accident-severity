@@ -16,6 +16,8 @@ M1 Data (Sharan) ─► M2 Features (Xinyu) ─► M3 Baseline + AutoML (Sharan)
 | M4 Advanced models and interpretation | Song, Fotsing | `src/models/advanced/`, `notebooks/04_*`, `notebooks/05_*` |
 | Shared | everyone | `src/config.py`, `src/evaluation/` (change only through a PR that everyone sees) |
 
+**Module guides:** detailed instructions per module are in `guides/` (start with [`guides/M2_GUIDE.md`](guides/M2_GUIDE.md)).
+
 **Rule:** only edit files you own. If you need a change in someone else's file, ask them or open an issue.
 
 ## 2. Handovers between modules (interface contract)

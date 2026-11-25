@@ -44,9 +44,11 @@ ZERO_IS_MISSING = {
 NUMERIC = {"lat", "long", "nbv", "vma", "larrout", "lartpc", "an_nais", "occutc"}
 
 # Identifiers and free text: never touched.
+# Note: 'mois', 'jour', 'dep' and 'com' are NOT here on purpose. Their format
+# changes between years ('1' in 2019 but '01' from 2022), so they go through the
+# leading-zero normalisation below. Found by the drift check in the EDA notebook.
 UNTOUCHED = {"Num_Acc", "id_vehicule", "id_usager", "num_veh", "year",
-             "adr", "voie", "v1", "v2", "pr", "pr1", "com", "dep", "hrmn",
-             "jour", "mois", "an"}
+             "adr", "voie", "v1", "v2", "pr", "pr1", "hrmn", "an"}
 
 
 def clean_table(df: pd.DataFrame) -> pd.DataFrame:

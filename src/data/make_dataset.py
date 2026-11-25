@@ -26,7 +26,23 @@ DROP = {
     "v2": "road letter suffix",
     "pr": "road marker number (location detail, no meaning across roads)",
     "pr1": "distance to road marker",
+    "lartpc": "central reservation width: 99.8% missing (EDA section 2)",
+    "occutc": "public-transport passenger count: 98.7% missing (EDA section 2)",
 }
+
+# Valid ranges, from domain knowledge (not learned from the data, so applying
+# them to every year is not leakage). Values outside become missing.
+VMA_RANGE = (10, 130)   # French speed limits; 1-9 and 140-901 km/h are typing errors
+MAX_AGE = 100           # 215 training people were "older than 100", up to 120
+
+
+def fix_implausible(df: pd.DataFrame) -> pd.DataFrame:
+    """Turn impossible speed limits and ages into missing values (see EDA section 3)."""
+    out = df.copy()
+    out["vma"] = out["vma"].where(out["vma"].between(*VMA_RANGE))
+    age = out["year"] - out["an_nais"]
+    out["an_nais"] = out["an_nais"].where(~(age > MAX_AGE))
+    return out
 
 SAMPLE_PEOPLE = 2_000
 
@@ -52,7 +68,7 @@ def sample_accidents(df: pd.DataFrame, n_people: int = SAMPLE_PEOPLE) -> pd.Data
 
 def main() -> None:
     persons = make_target(build_persons())
-    persons = persons.drop(columns=list(DROP))
+    persons = fix_implausible(persons.drop(columns=list(DROP)))
 
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     persons.to_parquet(PROCESSED_DIR / "persons.parquet", index=False)

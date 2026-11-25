@@ -32,7 +32,7 @@ Each module hands over a **file or a function**, always with the same name and f
 | M3 → M4 | `results/baseline.csv`: baseline scores to beat | draft |
 
 **`persons.parquet` columns (draft, M1 finalises):**
-- Keys: `Num_Acc`, `id_vehicule`, `id_usager`, `year`
+- Keys: `person_id` (unique, built by M1 because `id_usager` only exists from 2021), `Num_Acc`, `id_vehicule`, `year`
 - Target: `KSI` (1 = killed or hospitalised > 24 h, 0 = otherwise). The raw `grav` column is **removed**.
 - Features: circumstance variables from the 4 tables (time, light, weather, area, road, speed limit, vehicle, obstacle, user type, age, sex, safety equipment). Missing values are coded as `NaN` (all the raw codes -1, 0, empty, N/A are converted).
 

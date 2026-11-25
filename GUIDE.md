@@ -63,7 +63,7 @@ A handover changes only through a PR that the receiving person approves.
    git push -u origin m2/preprocessing-pipeline
    ```
 5. Open a **Pull Request** on GitHub into `main`, and fill in the template.
-6. **One teammate who is not the author approves it.** Reviewer by default = the next module in the pipeline (M1 → M2 → M3 → M4 → M1).
+6. Ask a teammate to review it (recommended, not enforced by GitHub). Reviewer by default = the next module in the pipeline (M1 → M2 → M3 → M4 → M1).
 7. Sharan merges it. Then delete the branch.
 
 ## 4. Code rules

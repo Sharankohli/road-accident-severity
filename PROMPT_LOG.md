@@ -19,7 +19,7 @@ Important AI interactions (target: 5 entries, at least 1 per member). Each entry
 ### P1: Building the person-level dataset (M1 data pipeline)
 - **Member:** Sharan Raj JANAKIRAMAN (M1)
 - **Date:** 2026-11-25
-- **Tool:** Claude (Claude Code in the Claude desktop app), with project instruction files (`CLAUDE.md`, `GUIDE.md`)
+- **Tool:** Claude (Claude Code in the Claude desktop app), with the project instruction file `CLAUDE.md` and our team rules
 - **Goal:** turn the 28 raw ONISR CSV files into one clean table, one row per person, with the KSI target and no leakage.
 - **First prompt (simple):** "let's start my M1 part. im gonna use vs code for this"
 - **Problem with the answer:** a prompt this short leaves every important choice to the AI: what "missing" means, how to join tables that are not one-to-one, which columns are leakage, which years may be looked at. The risks were real in this dataset: the official dictionary's general rule "0 = not filled in" is wrong for several columns, and the `lieux` table has several rows per accident from 2023, so a naive join copies people.

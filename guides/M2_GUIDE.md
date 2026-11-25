@@ -190,4 +190,4 @@ For `PROMPT_LOG.md`: save your first simple prompt, then the improved prompt wit
 ---
 
 ## 10. Questions?
-Ask in the group chat. Data questions → Sharan (M1). If something in this guide is wrong or unclear, open an issue or edit this file in your PR.
+Ask in the group chat. 

@@ -1,3 +1,5 @@
-model,pr_auc,roc_auc,precision,recall,f2,threshold,predicted_ksi_share
-Majority class,0.1803,0.5,0.0,0.0,0.0,0.5,0.0
-Expert rule,0.2513,0.6537,0.2819,0.6992,0.5395,0.5,0.4471
+model,scored_on,pr_auc,roc_auc,precision,recall,f2,threshold,predicted_ksi_share
+Majority class,all training years,0.1803,0.5,0.0,0.0,0.0,0.5,0.0
+Expert rule,all training years,0.2513,0.6537,0.2819,0.6992,0.5395,0.5,0.4471
+Logistic regression,out-of-fold (5 grouped folds),0.5887,0.8722,0.4363,0.8194,0.697,0.5,0.3386
+Logistic regression (F2 threshold),out-of-fold (5 grouped folds),0.5887,0.8722,0.3963,0.8744,0.7045,0.4151,0.3978

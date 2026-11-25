@@ -5,7 +5,8 @@
    (scikit-learn DummyClassifier). It never says "KSI".
 2. Expert rule: KSI if pedestrian, OR motorcyclist (>50cc), OR speed limit >= 80 km/h.
    Written by hand from road-safety knowledge, not learned: nothing to fit.
-3. Logistic regression: added when the M2 preprocessor is ready.
+3. Logistic regression: M2's linear preprocessor + LogisticRegression inside
+   one Pipeline, so encoding/scaling are learned on training folds only.
 
 Both classes follow the scikit-learn interface (fit / predict / predict_proba),
 so they go through exactly the same evaluation code as real models.
@@ -13,6 +14,11 @@ so they go through exactly the same evaluation code as real models.
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.dummy import DummyClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+
+from src.config import RANDOM_STATE
+from src.features.preprocess import build_preprocessor
 
 MOTORCYCLE_CODES = {"31", "32", "33", "34", "42", "43"}  # catv codes for motorised 2/3-wheelers > 50cc
 
@@ -20,6 +26,19 @@ MOTORCYCLE_CODES = {"31", "32", "33", "34", "42", "43"}  # catv codes for motori
 def majority_baseline() -> DummyClassifier:
     """Predicts the training KSI rate for everyone (strategy='prior')."""
     return DummyClassifier(strategy="prior")
+
+
+def logistic_baseline() -> Pipeline:
+    """M2 linear preprocessor + logistic regression with default regularisation (C=1).
+
+    class_weight="balanced": KSI people (18%) count about 4.5x more in the loss,
+    so the model does not simply learn "almost always not KSI". No tuning here:
+    tuning belongs to AutoML v0.1. Input X must come from add_features + get_splits.
+    """
+    return Pipeline([
+        ("prep", build_preprocessor("linear")),
+        ("model", LogisticRegression(class_weight="balanced", max_iter=2000, random_state=RANDOM_STATE)),
+    ])
 
 
 class ExpertRuleBaseline(ClassifierMixin, BaseEstimator):

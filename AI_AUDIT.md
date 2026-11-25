@@ -50,3 +50,21 @@ Real mistakes made by AI tools that we caught (target: at least 4, at least 1 pe
 - **Root cause:** no check that downloaded files were complete.
 - **Fix:** `scripts/download_data.py` stores the verified size of every file and refuses a file of the wrong size.
 - **Proof the fix works:** the script reports "ok" for all 28 files; `usagers-2022.csv` = 13,013,255 bytes; the loader's row counts match the verified figures (e.g. 871,534 people).
+
+### A5: Logistic smoke-test iteration limit was too low
+- **Member:** Xinyu ZHU (M2)
+- **Date:** 2026-11-25
+- **What the AI produced:** the first local logistic-regression smoke command used `max_iter=50`. The estimator's `.fit()` returned, but scikit-learn emitted a `ConvergenceWarning`; treating return without inspecting warnings as success would have overstated the check.
+- **How we detected it:** the actual `.venv/bin/python` command output contained `lbfgs failed to converge after 50 iteration(s)`.
+- **Root cause:** the smoke-test configuration imposed an arbitrary low iteration limit and did not initially promote convergence warnings to failures.
+- **Fix:** reran with `solver="liblinear"`, `max_iter=1000`, `RANDOM_STATE` from `src/config.py`, and `ConvergenceWarning` promoted to an error. The notebook uses the same guarded configuration.
+- **Proof the fix works:** the sample training pipeline completed without a convergence warning in 8 iterations (1,503 training rows, 170 transformed features). This is only an interface smoke test; it reports no model score. Entry left for M2 review.
+
+### A6: Safety-equipment flag initially treated every nonzero code as equipment used
+- **Member:** Xinyu ZHU (M2)
+- **Date:** 2026-11-25
+- **What the AI produced:** the first feature implementation mapped any nonzero value in `secu1`/`secu2` to `equipment_present`, although the available schema only documents 0 = none, 1 = belt, and 2 = helmet and does not define the remaining codes.
+- **How we detected it:** a final schema/semantics review compared the feature rule against the documented meanings in `M2_GUIDE.md` and the limited descriptions in `DATA_DICTIONARY.md`.
+- **Root cause:** code presence was incorrectly equated with known equipment use without a complete code mapping.
+- **Fix:** the combined positive flag now recognizes only documented codes 1/2; the no-equipment flag requires documented code 0; all other code combinations remain missing. Raw `secu1`/`secu2` remain categorical inputs.
+- **Proof the fix works:** focused assertions set `secu1`/`secu2` to documented 0, 1, and 2, unsupported 8, and missing values: 0 produced the no-equipment flag, 1/2 produced the documented positive flag, and 8/missing remained NaN. Both preprocessing variants then fit and transformed all 495 held-out sample rows (170 transformed columns). Entry left for M2 review.

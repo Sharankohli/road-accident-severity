@@ -1,0 +1,25 @@
+model,params,cv_pr_auc_mean,cv_pr_auc_std,train_pr_auc_mean,fit_time_s,subsample_people
+Logistic regression,"{""C"": 0.01}",0.5878,0.0072,0.5938,24.9859,99999
+Logistic regression,"{""C"": 0.1}",0.5897,0.0067,0.5988,27.9772,99999
+Logistic regression,"{""C"": 1}",0.588,0.0067,0.5986,34.0396,99999
+Logistic regression,"{""C"": 10}",0.5877,0.0067,0.5985,72.8185,99999
+Decision tree,"{""max_depth"": 4, ""min_samples_leaf"": 1}",0.4139,0.0124,0.4162,1.8654,29999
+Decision tree,"{""max_depth"": 4, ""min_samples_leaf"": 100}",0.414,0.0123,0.4151,1.6741,29999
+Decision tree,"{""max_depth"": 8, ""min_samples_leaf"": 1}",0.4733,0.0025,0.5675,2.3466,29999
+Decision tree,"{""max_depth"": 8, ""min_samples_leaf"": 100}",0.5201,0.007,0.5439,2.0043,29999
+Decision tree,"{""max_depth"": 16, ""min_samples_leaf"": 1}",0.3774,0.0133,0.8067,5.9248,29999
+Decision tree,"{""max_depth"": 16, ""min_samples_leaf"": 100}",0.5304,0.0104,0.5723,3.7449,29999
+Decision tree,"{""max_depth"": null, ""min_samples_leaf"": 1}",0.2962,0.0079,1.0,9.3204,29999
+Decision tree,"{""max_depth"": null, ""min_samples_leaf"": 100}",0.5304,0.0105,0.5723,2.4717,29999
+Random forest,"{""max_depth"": 10, ""min_samples_leaf"": 1}",0.5691,0.0086,0.6817,9.5789,29999
+Random forest,"{""max_depth"": 10, ""min_samples_leaf"": 20}",0.5651,0.0096,0.6044,10.5624,29999
+Random forest,"{""max_depth"": null, ""min_samples_leaf"": 1}",0.5797,0.0111,0.9999,53.5026,29999
+Random forest,"{""max_depth"": null, ""min_samples_leaf"": 20}",0.5771,0.0108,0.6426,13.2314,29999
+k-nearest neighbours,"{""n_neighbors"": 5, ""weights"": ""uniform""}",0.424,0.0141,0.6753,0.9067,19998
+k-nearest neighbours,"{""n_neighbors"": 5, ""weights"": ""distance""}",0.4615,0.0185,1.0,1.0751,19998
+k-nearest neighbours,"{""n_neighbors"": 25, ""weights"": ""uniform""}",0.5224,0.0082,0.5919,1.0761,19998
+k-nearest neighbours,"{""n_neighbors"": 25, ""weights"": ""distance""}",0.5396,0.0072,1.0,1.1371,19998
+k-nearest neighbours,"{""n_neighbors"": 101, ""weights"": ""uniform""}",0.5269,0.0118,0.5497,1.2006,19998
+k-nearest neighbours,"{""n_neighbors"": 101, ""weights"": ""distance""}",0.5331,0.0115,1.0,2.0902,19998
+SVM,"{""C"": 0.1}",0.5606,0.02,0.6132,17.8991,10000
+SVM,"{""C"": 1}",0.5805,0.0123,0.8004,12.3478,10000

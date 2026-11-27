@@ -1,0 +1,2 @@
+model,pr_auc,roc_auc,precision,recall,f2,threshold,predicted_ksi_share,tn,fp,fn,tp
+Logistic regression {'model__C': 0.1},0.5888,0.8722,0.3959,0.8748,0.7044,0.415,0.3984,358733,149117,13982,97720

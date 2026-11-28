@@ -1,0 +1,55 @@
+{
+ "Logistic regression": {
+  "params": {
+   "model__C": 0.1
+  },
+  "cv_pr_auc_mean": 0.5897199395938265,
+  "cv_pr_auc_std": 0.006723441358013014,
+  "train_pr_auc_mean": 0.598785805482548,
+  "subsample_people": 99999,
+  "search_time_s": 60
+ },
+ "Decision tree": {
+  "params": {
+   "model__max_depth": 18,
+   "model__min_samples_leaf": 100
+  },
+  "cv_pr_auc_mean": 0.5574712829805043,
+  "cv_pr_auc_std": 0.0037255366062370256,
+  "train_pr_auc_mean": 0.6021391919069871,
+  "subsample_people": 99999,
+  "search_time_s": 438
+ },
+ "Random forest": {
+  "params": {
+   "model__max_depth": null,
+   "model__min_samples_leaf": 5
+  },
+  "cv_pr_auc_mean": 0.6044038567790947,
+  "cv_pr_auc_std": 0.006283422766820485,
+  "train_pr_auc_mean": 0.8015996401395027,
+  "subsample_people": 99999,
+  "search_time_s": 795
+ },
+ "k-nearest neighbours": {
+  "params": {
+   "model__n_neighbors": 25,
+   "model__weights": "distance"
+  },
+  "cv_pr_auc_mean": 0.5396307492104799,
+  "cv_pr_auc_std": 0.0072385242996774665,
+  "train_pr_auc_mean": 0.9999987524964157,
+  "subsample_people": 19998,
+  "search_time_s": 352
+ },
+ "SVM": {
+  "params": {
+   "model__C": 1
+  },
+  "cv_pr_auc_mean": 0.5816403230768626,
+  "cv_pr_auc_std": 0.009837248594447167,
+  "train_pr_auc_mean": 0.77041630507768,
+  "subsample_people": 19998,
+  "search_time_s": 539
+ }
+}

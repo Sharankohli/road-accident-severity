@@ -114,3 +114,12 @@ Real mistakes made by AI tools that we caught (target: at least 4, at least 1 pe
 - **Fix:** the notebook (`notebooks/05c_catboost_independent_check.ipynb`, section 1) and the module docstring now state that our models use ordered target statistics but not ordered boosting. This is listed as a limitation (`boosting_type="Ordered"` could be compared, but it is much slower).
 - **Proof the fix works:** the notebook prints `boosting_type used: Plain` from the saved fold-1 model, and the text matches that output.
 
+
+### A12: Grid search tuned on unequal samples gave a wrong model ranking
+- **Member:** Sharan Raj JANAKIRAMAN (M3)
+- **Date:** 2026-11-28
+- **What the AI produced:** the AI's first AutoML v0.1 design (`src/models/automl.py`) did not finish in 2 hours: it saved results only at the end, gave trees a sparse one-hot matrix (about 25 s per depth-8 tree on 80,000 people) and searched a linear SVM with C = 10 that did not converge. The AI's quick fix shrank the samples per model (logistic regression 100,000 people, trees 30,000, kNN 20,000, SVM 10,000). The Week 3 conclusion "logistic regression is the best course model" (0.590 vs random forest 0.580) came from that unfair comparison.
+- **How we detected it:** the M4 run retrained the v0.1 best settings on all training years: random forest reached 0.614 and the decision tree 0.583 (0.530 on 30,000), above or close to logistic regression (0.589). The ranking depended on sample size, not on the models.
+- **Root cause:** computing time was solved by changing the data each model saw, which breaks the "same data, same folds" rule needed to compare models.
+- **Fix:** AutoML v0.2 (`src/models/automl_v2.py`, `notebooks/03b_automl_v02.ipynb`): logistic regression, tree and forest tuned on the same 100,000 people; kNN and SVM on the same 20,000; all five tuned models scored on one identical 20,000 sample; dense input for trees, wider grids, no SVM iteration cap, results saved after each model; best settings retrained out-of-fold on all 619,552 training people. Test years not used.
+- **Proof the fix works:** same 20,000 people: random forest 0.584 > SVM 0.582 > logistic regression 0.576 > kNN 0.540 > tree 0.520. Same 100,000 people: forest 0.604 > logistic regression 0.590. All training years: forest with v0.2 settings 0.621 (v0.1 settings 0.614), logistic regression 0.589. The whole search ran in about 75 minutes instead of not finishing.

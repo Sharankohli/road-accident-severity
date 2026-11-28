@@ -1,0 +1,6 @@
+model,cv_pr_auc_mean,cv_pr_auc_std,train_pr_auc_mean,people
+Logistic regression,0.5761,0.0142,0.6132,19998
+Decision tree,0.5204,0.0121,0.5719,19998
+Random forest,0.5837,0.0129,0.8147,19998
+k-nearest neighbours,0.5396,0.0072,1.0,19998
+SVM,0.5816,0.0098,0.7704,19998

@@ -30,7 +30,9 @@ def catboost_pipeline(**params):
                     loss_function='Logloss', eval_metric='PRAUC',
                     auto_class_weights='Balanced', random_seed=RANDOM_STATE,
                     thread_count=4, verbose=False, allow_writing_files=False,
-                    # Explicit: the paper's ordered boosting, not CPU's large-data Plain default.
+                    # Default here = the paper's Ordered boosting. Notebook 05 switches the depth-8 and
+                    # unweighted candidates to Plain (CPU time); the selected final model (depth8_fast)
+                    # therefore uses Plain boosting. Ordered target statistics for categories stay on (A11).
                     boosting_type='Ordered', cat_features=tuple(CATEGORICAL_FEATURES))
     settings.update(params)
     return Pipeline([('prep', CatBoostFrame()), ('model', CatBoostClassifier(**settings))])

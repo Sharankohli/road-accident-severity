@@ -68,3 +68,22 @@ Real mistakes made by AI tools that we caught (target: at least 4, at least 1 pe
 - **Root cause:** code presence was incorrectly equated with known equipment use without a complete code mapping.
 - **Fix:** `belt_or_helmet_recorded` is positive when either field contains 1 (belt) or 2 (helmet). The no-equipment flag requires `secu1=0` with `secu2=0` or missing. Both flags remain missing for other combinations. Raw `secu1`/`secu2` remain categorical inputs.
 - **Proof the fix works:** focused assertions used codes 0, 1, 2, and 8 (undeterminable), plus missing values. The no-equipment case and belt-or-helmet cases produced their respective flags, and the code 8 and missing-only cases remained NaN. Both preprocessing variants then fit and transformed all 495 held-out sample rows (170 transformed columns). Entry left for M2 review.
+
+### A7: Virtual environment created with the wrong Python version
+- **Member:** FOTSING TANKOU DAN KATEL (M4b)
+- **Date:** 2026-11-27
+- **What the AI produced:** the AI set up the environment with Python 3.13, the newest version installed on the laptop, although `requirements.txt` says "Python 3.12". `pip install -r requirements.txt` did not fail: no numpy 2.0.2 wheel exists for 3.13, so pip silently compiled numpy from source.
+- **How we detected it:** `python -m src.data.make_dataset` crashed inside numpy (`OverflowError: cannot convert longdouble infinity to integer` in `numpy/_core/getlimits.py`). The source-built numpy was broken.
+- **Root cause:** the version line at the top of `requirements.txt` was not checked; a successful install was taken as proof the environment was right.
+- **Fix:** installed Python 3.12.10 and rebuilt `.venv` with the pinned versions (numpy 2.0.2 installed from an official wheel this time).
+- **Proof the fix works:** `make_dataset` then rebuilt `persons.parquet` with 871,115 people, 46 columns and a KSI rate of 18.1%, the same figures as the README.
+
+### A8: "CatBoost uses ordered boosting" was not true for our runs
+- **Member:** FOTSING TANKOU DAN KATEL (M4b)
+- **Date:** 2026-11-28
+- **What the AI produced:** the AI-assisted M4 guide and the AI's first explanation of the method said that our CatBoost model avoids prediction shift with **ordered boosting**, one of the two ideas of the paper. A paper summary built on that would have described a mechanism our model does not use.
+- **How we detected it:** before writing the paper summary, we asked the fitted model which mode it used: `model.get_all_params()["boosting_type"]`.
+- **Root cause:** the paper's ideas were taken as the library's default behaviour. In `catboost==1.2.10` on CPU the default `boosting_type` is `"Plain"` (we checked it on 10,000 and 80,000 rows). Only the ordered target statistics for categories are always on.
+- **Fix:** the notebook (`notebooks/05_catboost_interpretation.ipynb`, section 1) and the module docstring now state that our models use ordered target statistics but not ordered boosting. This is listed as a limitation (`boosting_type="Ordered"` could be compared, but it is much slower).
+- **Proof the fix works:** the notebook prints `boosting_type used: Plain` from the saved fold-1 model, and the text matches that output.
+

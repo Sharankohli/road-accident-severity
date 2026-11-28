@@ -40,3 +40,17 @@ Important AI interactions (target: 5 entries, at least 1 per member). Each entry
 - **Problem with the answer:** the first logistic-regression smoke command used `max_iter=50` and emitted a convergence warning. Final schema review also caught that the initial equipment flag treated every nonzero code as equipment used, although only codes 0/1/2 were documented.
 - **Improved prompt (with constraints):** the same request specified the actual M1 schema and findings, exact 2019-2023 / 2024-2025 split sizes, `Num_Acc`-grouped stratified CV, forbidden IDs/outcomes, no invented code meanings, no test-set tuning/performance, training-fold-only fitted transforms, no SMOTE, and requested a training-only logistic pipeline smoke test. Refinement: configure the smoke test with `RANDOM_STATE`, `liblinear`, `max_iter=1000`, and warnings-as-errors; derive equipment flags only from documented values and leave unsupported codes unknown.
 - **What we kept / changed:** kept the row-wise feature boundary and pipeline-contained fitted preprocessing. The revised logistic check converged in 8 iterations on the sample training rows. Equipment flags were narrowed to documented codes; focused 0/1/2/8/missing assertions passed, and both preprocessors transformed held-out sample rows. No model performance was computed.
+
+### P3: CatBoost and interpretation (M4b)
+- **Member:** FOTSING TANKOU DAN KATEL (M4b)
+- **Date:** 2026-11-27
+- **Tool:** Claude (Claude Code in VS Code)
+- **Goal:** add CatBoost (the out-of-course algorithm) with a short paper summary, score it like the other models on the training years, and explain which circumstances are associated with KSI.
+- **First prompt (simple):** (in French) "this is my task: get the project from git, do what is needed and push the work on another branch; show me the work before pushing, everything in English."
+- **Problem with the answer:** the prompt did not say which half of M4 was mine or which rules applied, so the AI had to ask. Without the guide's rules, the classic M4 traps stay open: tuning on the test years, early stopping on the fold used to score, ungrouped folds, one-hot encoding before CatBoost (the comparison would no longer be about CatBoost's own category handling).
+- **Improved prompt (with constraints):** "my part is M4b; follow `M4_GUIDE.md` strictly", i.e.:
+  - training years only, the shared accident-grouped `folds`, PR-AUC as main score, `evaluate()` and `best_f2_threshold` on out-of-fold predictions;
+  - same columns as M2 (`NUMERIC_FEATURES`, `CATEGORICAL_FEATURES`), raw categories with NaN → `"missing"`, `cat_features`, no one-hot;
+  - tune on ~100,000 people drawn as whole accidents, grid from the guide (depth 4/6/8, learning rate 0.03/0.1, iterations 500–1000, `l2_leaf_reg`), `auto_class_weights="Balanced"` compared with none;
+  - test years 2024–2025 not touched before the final evaluation; `RANDOM_STATE` everywhere; new libraries pinned.
+- **What we kept / changed:** kept the guide's design. Changed: two-stage search instead of the full grid, because one fit of 1,000 trees on 80,000 people takes about 1.5–2.5 minutes (measured; the whole search took 4 hours); `accident_subsample` reused from AutoML v0.1 instead of a second copy; 500 and 1000 iterations scored from the same 1000-tree model instead of early stopping on the validation fold; permutation importance and SHAP computed by the fold-1 model on fold-1 validation accidents only.

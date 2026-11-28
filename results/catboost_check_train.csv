@@ -1,0 +1,3 @@
+model,scored_on,pr_auc,roc_auc,precision,recall,f2,threshold,predicted_ksi_share
+CatBoost,out-of-fold (5 grouped folds),0.6471,0.8887,0.6792,0.4707,0.5015,0.5,0.1249
+CatBoost (F2 threshold),out-of-fold (5 grouped folds),0.6471,0.8887,0.4274,0.869,0.7202,0.1469,0.3666

@@ -50,3 +50,17 @@ Important AI interactions (target: 5 entries, at least 1 per member). Each entry
 - **Improved prompt (with constraints):** "使用notebook，完成m4的所有任务，记住对于notebook中的文字说明使用口语化英语" (use notebooks, complete all M4 tasks, and write their explanations in conversational English). Later, the user requested the tasks in `SONG_ENSEMBLES_TODAY.md`, including the shared-sample comparison and PR delivery. The user explicitly chose to wait for the real M3 AutoML handoff instead of inventing a replacement search; work resumed after PR #8 was merged.
 - **Problem with the answer:** the first CatBoost pipeline passed a mutable list as `cat_features`, which failed when scikit-learn cloned the model. The initial dataset was also written with a different PyArrow environment and could not be read by the project's pinned PyArrow.
 - **What we kept / changed:** reused M3's saved best settings; kept preprocessing within each fit; used nested grouped CV for stacking; changed CatBoost's feature-name container to a tuple and added a real fit test; rebuilt the processed data with the pinned Python 3.12 environment. The test years are reserved for a frozen final plan after training choices are complete.
+
+### P4: CatBoost and interpretation (M4b)
+- **Member:** FOTSING TANKOU DAN KATEL (M4b)
+- **Date:** 2026-11-27
+- **Tool:** Claude (Claude Code in VS Code)
+- **Goal:** add CatBoost (the out-of-course algorithm) with a short paper summary, score it like the other models on the training years, and explain which circumstances are associated with KSI.
+- **First prompt (simple):** (in French) "this is my task: get the project from git, do what is needed and push the work on another branch; show me the work before pushing, everything in English."
+- **Problem with the answer:** the prompt did not say which half of M4 was mine or which rules applied, so the AI had to ask. Without the guide's rules, the classic M4 traps stay open: tuning on the test years, early stopping on the fold used to score, ungrouped folds, one-hot encoding before CatBoost (the comparison would no longer be about CatBoost's own category handling).
+- **Improved prompt (with constraints):** "my part is M4b; follow `M4_GUIDE.md` strictly", i.e.:
+  - training years only, the shared accident-grouped `folds`, PR-AUC as main score, `evaluate()` and `best_f2_threshold` on out-of-fold predictions;
+  - same columns as M2 (`NUMERIC_FEATURES`, `CATEGORICAL_FEATURES`), raw categories with NaN → `"missing"`, `cat_features`, no one-hot;
+  - tune on ~100,000 people drawn as whole accidents, grid from the guide (depth 4/6/8, learning rate 0.03/0.1, iterations 500–1000, `l2_leaf_reg`), `auto_class_weights="Balanced"` compared with none;
+  - test years 2024–2025 not touched before the final evaluation; `RANDOM_STATE` everywhere; new libraries pinned.
+- **What we kept / changed:** kept the guide's design. Changed: two-stage search instead of the full grid, because one fit of 1,000 trees on 80,000 people takes about 1.5–2.5 minutes (measured; the whole search took 4 hours); `accident_subsample` reused from AutoML v0.1 instead of a second copy; 500 and 1000 iterations scored from the same 1000-tree model instead of early stopping on the validation fold; permutation importance and SHAP computed by the fold-1 model on fold-1 validation accidents only.

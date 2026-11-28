@@ -1,0 +1,35 @@
+{
+  "frozen_at_utc": "2026-11-28T12:13:57.925283+00:00",
+  "plan": {
+    "run_id": "734efc841d8b51f8",
+    "chosen": [
+      "Logistic baseline",
+      "Random forest",
+      "Boosting",
+      "CatBoost"
+    ],
+    "thresholds": {
+      "Logistic baseline": 0.413023327963105,
+      "Random forest": 0.15819807078106937,
+      "Boosting": 0.4393830067026446,
+      "CatBoost": 0.42374461403378005
+    },
+    "model_signature": "d572a8715e9288cbe15123ad4b8b5130",
+    "stack_signature": null,
+    "test_index_signature": "6823c527c84aca5e8004ff3b39679471",
+    "test_years": [
+      2024,
+      2025
+    ],
+    "train_people": 619552,
+    "test_people": 251563,
+    "environment": {
+      "python": "3.12.14",
+      "numpy": "2.0.2",
+      "pandas": "2.3.3",
+      "scikit-learn": "1.9.1",
+      "catboost": "1.2.10",
+      "shap": "0.54.1"
+    }
+  }
+}

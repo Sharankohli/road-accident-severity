@@ -49,3 +49,28 @@ road-accident-severity/
 ├── CONTRIBUTIONS.md    who did what
 └── requirements.txt    pinned dependencies
 ```
+
+## M4 notebooks
+
+Use Python 3.12 and the pinned requirements. From the repository root:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m pip install -r requirements.txt
+python scripts/download_data.py
+python -m src.data.make_dataset
+python -m ipykernel install --user --name road-accident-m4 --display-name "Python (road-accident M4)"
+```
+
+Select **Python (road-accident M4)** in Jupyter or VS Code, then run these notebooks in order:
+
+1. `notebooks/04_ensembles.ipynb`: the common 30,000-person comparison, full training OOF predictions, nested grouped stacking, accident-bootstrap intervals and error analysis.
+2. `notebooks/05_catboost_interpretation.ipynb`: paper discussion, CatBoost search and OOF predictions, held-out permutation importance, native CatBoost SHAP and risk-situation tables.
+3. `notebooks/05b_final_evaluation.ipynb`: frozen model choices and thresholds, one test prediction pass, paired intervals and the 2024/2025 comparison.
+
+For command-line execution, use `python scripts/execute_notebook.py notebooks/04_ensembles.ipynb` (and the other notebook paths). It saves completed cells if a later step fails. Training is substantial, especially nested stacking. Completed fits are cached under ignored `data/m4/` and reused only when their signatures match. CSV tables go in `results/`; plots go in `report/figures/`.
+
+The final notebook records `results/m4_final_plan.json` before producing test predictions. Reopening it reuses the cached predictions. A changed plan is rejected; do not delete the plan to tune against the test years. To reproduce this frozen result set on a fresh checkout, use its result-producing commit and the pinned environment. Later changes under `src/models/` or `src/features/` change the code fingerprint. Reproduction is not a new model-selection opportunity.
+
+Run the checks with `python -m pytest -q`. The M4 checks cover literal-versus-weighted accident bootstrap, paired differences, input alignment, nested stacking's accident isolation, CatBoost cloning/fitting and the frozen-test guard.

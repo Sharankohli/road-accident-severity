@@ -68,3 +68,30 @@ Real mistakes made by AI tools that we caught (target: at least 4, at least 1 pe
 - **Root cause:** code presence was incorrectly equated with known equipment use without a complete code mapping.
 - **Fix:** `belt_or_helmet_recorded` is positive when either field contains 1 (belt) or 2 (helmet). The no-equipment flag requires `secu1=0` with `secu2=0` or missing. Both flags remain missing for other combinations. Raw `secu1`/`secu2` remain categorical inputs.
 - **Proof the fix works:** focused assertions used codes 0, 1, 2, and 8 (undeterminable), plus missing values. The no-equipment case and belt-or-helmet cases produced their respective flags, and the code 8 and missing-only cases remained NaN. Both preprocessing variants then fit and transformed all 495 held-out sample rows (170 transformed columns). Entry left for M2 review.
+
+### A7: CatBoost's categorical-feature list broke sklearn cloning
+- **Member:** SONG Haoyu (M4)
+- **Date:** 2026-11-27
+- **What the AI produced:** the first `catboost_pipeline()` passed `cat_features=CATEGORICAL_FEATURES`, a Python list, to CatBoost. The pipeline looked compatible with sklearn, but `clone()` raised `RuntimeError: ... constructor either does not set or modifies parameter cat_features` before cross-validation could fit a model.
+- **How we detected it:** executing `05_catboost_interpretation.ipynb` reached the real grouped-CV fit and failed. A minimal check reproduced the error with a list and succeeded with a tuple.
+- **Root cause:** this CatBoost/sklearn combination copies the mutable parameter container in a way that fails sklearn's constructor-identity check. Checking only frame conversion was not enough to verify estimator compatibility.
+- **Fix:** pass `tuple(CATEGORICAL_FEATURES)` and add `test_catboost_pipeline_clones_and_fits_real_estimator` in `tests/test_m4.py`.
+- **Proof the fix works:** the regression test clones the actual pipeline, fits CatBoost on a small mixed-type table with missing categories, and verifies two-class probabilities. This is an interface test, not a model-performance claim.
+
+### A8: The default Python wrote a Parquet file the pinned environment could not read
+- **Member:** SONG Haoyu (M4)
+- **Date:** 2026-11-27
+- **What the AI produced:** the data-generation command initially used the system `python`, while the notebooks used the project's pinned Python 3.12 environment. Reading the resulting file with PyArrow 19.0.0 failed with `OSError: Repetition level histogram size mismatch`.
+- **How we detected it:** the first cell that loaded the real dataset in `04_ensembles.ipynb` failed, before any model training.
+- **Root cause:** the AI did not use the same dependency environment to write and read the processed dataset.
+- **Fix:** regenerate it with `.venv/bin/python -m src.data.make_dataset` and use that environment for notebook execution.
+- **Proof the fix works:** the notebooks subsequently loaded 619,552 training people from the rebuilt 871,115-person dataset. The raw files and the project split were not changed.
+
+### A9: A tree-obstacle EDA check used the wrong code
+- **Member:** SONG Haoyu (M4)
+- **Date:** 2026-11-27
+- **What the AI produced:** the initial CatBoost notebook labelled `obs=1` as a tree obstacle in a training-EDA cross-check.
+- **How we detected it:** a review against `src/data/DATA_DICTIONARY.md` and the executed M1 notebook showed that trees use code `2`; M1's tree rate was 56.3% for 11,123 training people.
+- **Root cause:** the AI recalled a category code instead of checking the project's documented mapping.
+- **Fix:** use `obs=2` and recompute the table from the training rows. The raw obstacle feature used by the models was already categorical and was not remapped, so this affected only the explanatory EDA check.
+- **Proof the fix works:** `results/m4_eda_checks.csv` and the executed CatBoost notebook show the corrected tree-obstacle count and rate, which can be compared directly with M1.

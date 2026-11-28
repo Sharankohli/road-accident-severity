@@ -8,7 +8,7 @@ import pandas as pd
 from src.config import RANDOM_STATE
 from src.features.preprocess import CATEGORICAL_FEATURES, NUMERIC_FEATURES
 from src.features.split import get_cv
-from src.models.catboost_model import (
+from src.models.catboost_check import (
     FEATURES, MISSING, CatBoostKSI, out_of_fold, to_catboost_frame,
 )
 

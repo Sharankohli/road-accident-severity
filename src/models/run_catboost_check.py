@@ -1,21 +1,21 @@
 # Owner: FOTSING TANKOU DAN KATEL (M4b)
 """CatBoost on the TRAINING years (2019-2023) only: tuning, out-of-fold scores, interpretation.
 
-Run from the repo root:   python -m src.models.run_catboost [tune|oof|interpret|all]
+Run from the repo root:   python -m src.models.run_catboost_check [tune|oof|interpret|all]
 
 Steps (the test years 2024-2025 are never used here):
   1. tune      grouped 5-fold CV on a subsample of ~100,000 people (whole accidents)
-               -> results/catboost_tuning.csv, results/catboost_best_params.json
+               -> results/catboost_check_tuning.csv, results/catboost_check_best_params.json
   2. oof       best setting, one model per shared grouped fold on all training years
-               -> results/catboost_train.csv (same columns as results/baseline_train.csv)
-                  data/processed/catboost_oof.parquet (person-level, not on GitHub)
+               -> results/catboost_check_train.csv (same columns as results/baseline_train.csv)
+                  data/processed/catboost_check_oof.parquet (person-level, not on GitHub)
                Threshold for precision/recall/F2 = best_f2_threshold on these
                out-of-fold predictions; it will be applied unchanged to the test years.
   3. interpret permutation importance and SHAP, both computed by the fold-1 model on
                accidents it never saw (a subsample of fold-1 validation accidents),
                and a ranked table of high-severity situations from out-of-fold predictions.
-               -> results/catboost_permutation_importance.csv, results/catboost_shap_importance.csv,
-                  results/catboost_high_risk_situations.csv, report/figures/m4_catboost_*.png
+               -> results/catboost_check_permutation_importance.csv, results/catboost_check_shap_importance.csv,
+                  results/catboost_check_high_risk_situations.csv, report/figures/m4c_catboost_*.png
 """
 import json
 import sys
@@ -38,7 +38,7 @@ from src.features.build_features import add_features
 from src.features.preprocess import CATEGORICAL_FEATURES
 from src.features.split import get_cv, get_splits
 from src.models.automl import accident_subsample  # M3: whole accidents, RANDOM_STATE
-from src.models.catboost_model import FEATURES, CatBoostKSI, out_of_fold, to_catboost_frame, tune
+from src.models.catboost_check import FEATURES, CatBoostKSI, out_of_fold, to_catboost_frame, tune
 
 TUNE_PEOPLE = 100_000
 INTERPRET_PEOPLE = 30_000   # validation people used for permutation importance and SHAP
@@ -51,10 +51,10 @@ INTERPRET_PEOPLE = 30_000   # validation people used for permutation importance 
 #   stage 2: l2_leaf_reg 1 and 10 around the best stage-1 setting.
 GRID_STAGE1 = [{"depth": d, "learning_rate": lr, "l2_leaf_reg": 3.0} for d in (4, 6, 8) for lr in (0.03, 0.1)]
 L2_STAGE2 = (1.0, 10.0)
-BEST_PARAMS = RESULTS_DIR / "catboost_best_params.json"
-OOF_FILE = PROCESSED_DIR / "catboost_oof.parquet"
-FOLD1_MODEL = PROCESSED_DIR / "catboost_fold1.cbm"   # reused by the interpretation step
-TUNE_PROGRESS = PROCESSED_DIR / "catboost_tuning_progress.csv"  # lets a crashed tuning restart
+BEST_PARAMS = RESULTS_DIR / "catboost_check_best_params.json"
+OOF_FILE = PROCESSED_DIR / "catboost_check_oof.parquet"
+FOLD1_MODEL = PROCESSED_DIR / "catboost_check_fold1.cbm"   # reused by the interpretation step
+TUNE_PROGRESS = PROCESSED_DIR / "catboost_check_tuning_progress.csv"  # lets a crashed tuning restart
 
 
 def load():
@@ -92,7 +92,7 @@ def step_tune(X, y, groups):
         best["auto_class_weights"] = None
     print(f"Tuning: {time.time() - t:.0f} s, best {best}")
 
-    table.round(4).to_csv(RESULTS_DIR / "catboost_tuning.csv", index=False)
+    table.round(4).to_csv(RESULTS_DIR / "catboost_check_tuning.csv", index=False)
     BEST_PARAMS.write_text(json.dumps(best, indent=2))
 
 
@@ -107,7 +107,7 @@ def step_oof(X, y, groups, folds):
     rows = [{"model": "CatBoost", "scored_on": scored_on, **evaluate(y, oof)},
             {"model": "CatBoost (F2 threshold)", "scored_on": scored_on, **evaluate(y, oof, threshold=thr)}]
     results = pd.DataFrame(rows).set_index("model").round(4)
-    results.to_csv(RESULTS_DIR / "catboost_train.csv")
+    results.to_csv(RESULTS_DIR / "catboost_check_train.csv")
     print(results.drop(columns="scored_on").to_string())
     fold_id = np.zeros(len(y), dtype=np.int8)
     for k, (_, valid) in enumerate(folds, start=1):
@@ -168,7 +168,7 @@ def step_interpret(X, y, groups, folds):
     perm_table = pd.DataFrame({"feature": FEATURES, "pr_auc_drop_mean": perm.importances_mean,
                                "pr_auc_drop_std": perm.importances_std})
     perm_table = perm_table.sort_values("pr_auc_drop_mean", ascending=False).reset_index(drop=True)
-    perm_table.round(5).to_csv(RESULTS_DIR / "catboost_permutation_importance.csv", index=False)
+    perm_table.round(5).to_csv(RESULTS_DIR / "catboost_check_permutation_importance.csv", index=False)
     print(f"Permutation importance: {time.time() - t:.0f} s")
 
     # SHAP values (CatBoost computes exact tree SHAP itself; shap is used for the plot).
@@ -177,7 +177,7 @@ def step_interpret(X, y, groups, folds):
     sv = sv[:, :-1]  # last column = expected value (base log-odds)
     shap_table = pd.DataFrame({"feature": FEATURES, "mean_abs_shap": np.abs(sv).mean(axis=0)})
     shap_table = shap_table.sort_values("mean_abs_shap", ascending=False).reset_index(drop=True)
-    shap_table.round(5).to_csv(RESULTS_DIR / "catboost_shap_importance.csv", index=False)
+    shap_table.round(5).to_csv(RESULTS_DIR / "catboost_check_shap_importance.csv", index=False)
 
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     top = perm_table.head(15).iloc[::-1]
@@ -186,7 +186,7 @@ def step_interpret(X, y, groups, folds):
     ax.set_xlabel("Drop in PR-AUC when the column is shuffled (mean of 5 repeats)")
     ax.set_title("CatBoost permutation importance (top 15, unseen fold-1 accidents)")
     fig.tight_layout()
-    fig.savefig(FIGURES_DIR / "m4_catboost_permutation_importance.png", dpi=150)
+    fig.savefig(FIGURES_DIR / "m4c_catboost_permutation_importance.png", dpi=150)
     plt.close(fig)
 
     # Beeswarm: colour = value of numeric columns; category columns have no order, so grey.
@@ -200,13 +200,13 @@ def step_interpret(X, y, groups, folds):
     plt.title("CatBoost SHAP values (top 15; colour only for numeric columns)")
     plt.xlabel("SHAP value (impact on KSI log-odds)")
     plt.tight_layout()
-    plt.savefig(FIGURES_DIR / "m4_catboost_shap_summary.png", dpi=150)
+    plt.savefig(FIGURES_DIR / "m4c_catboost_shap_summary.png", dpi=150)
     plt.close()
 
-    threshold = pd.read_csv(RESULTS_DIR / "catboost_train.csv", index_col="model").loc[
+    threshold = pd.read_csv(RESULTS_DIR / "catboost_check_train.csv", index_col="model").loc[
         "CatBoost (F2 threshold)", "threshold"]
     table = high_risk_table(X, oof, threshold)
-    table.round(4).to_csv(RESULTS_DIR / "catboost_high_risk_situations.csv", index=False)
+    table.round(4).to_csv(RESULTS_DIR / "catboost_check_high_risk_situations.csv", index=False)
     print(table.head(15).round(3).to_string())
 
 

@@ -4,12 +4,5 @@
 |---|---|---|---|
 | Sharan Raj JANAKIRAMAN | M1 Data and EDA; M3 Baseline and AutoML v0.1 | `src/data/`, `src/models/baseline.py`, `src/models/automl.py` | (to fill) |
 | Xinyu ZHU | M2 Preprocessing and features | `src/features/` | (to fill) |
-| SONG Haoyu | M4a Ensembles and error analysis | `src/evaluation/bootstrap.py`, `src/models/ensembles.py` | (to fill) |
-| FOTSING TANKOU DAN KATEL | M4b CatBoost, interpretation and final test table | `src/models/catboost_model.py`, `src/models/run_catboost.py`, `notebooks/05_catboost_interpretation.ipynb` | CatBoost (out-of-course algorithm) with paper summary, tuning on a subsample of whole accidents and out-of-fold scores on the training years (PR-AUC 0.647 vs 0.589 for the logistic baseline); calibration check; permutation importance, SHAP (also by category), comparison with the logistic odds ratios and table of high-severity situations; final evaluation on the test years (`src/models/final_evaluation.py`, branch `m4/final-evaluation`, runs once the M4a bootstrap is merged) |
-
-## M4 split
-
-M4 has two owners, so it is split into two halves, each with its own branches, code and oral explanation:
-
-- **M4a (SONG Haoyu):** bootstrap confidence intervals, ensembles (bagging, boosting, voting, stacking), error analysis. Branches `m4/bootstrap`, `m4/ensembles`.
-- **M4b (FOTSING TANKOU DAN KATEL):** CatBoost and its paper, interpretation of risk factors, final evaluation on the test years. Branches `m4/catboost`, `m4/final-evaluation`.
+| SONG Haoyu | M4 notebook implementation (M4a and M4b) | `notebooks/04_ensembles.ipynb`, `notebooks/05_catboost_interpretation.ipynb`, `notebooks/05b_final_evaluation.ipynb`, `src/models/ensembles.py`, `src/models/catboost_model.py`, `src/evaluation/bootstrap.py` | M3 handoff integration; grouped ensemble comparison; nested stacking; accident bootstrap; CatBoost; OOF error analysis and interpretation; frozen final-test workflow. AI-assisted implementation is recorded in P3 and A7–A9. |
+| FOTSING TANKOU DAN KATEL | M4b CatBoost independent check, interpretation and recommendations | `src/models/catboost_check.py`, `src/models/run_catboost_check.py`, `notebooks/05c_catboost_independent_check.ipynb` | Independent CatBoost implementation with paper summary, two-stage tuning (17 settings) on whole-accident subsamples and out-of-fold scores on the training years (PR-AUC 0.6471, matching Song's 0.6469: the result is robust); found that CatBoost ran in Plain, not ordered, boosting (A11); permutation importance, SHAP and high-severity situations with Wilson intervals. To come: recommendations for road-safety users, demo, report sections. AI use recorded in P4, A10–A11. |

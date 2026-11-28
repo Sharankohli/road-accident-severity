@@ -1,0 +1,47 @@
+model,params,cv_pr_auc_mean,cv_pr_auc_std,train_pr_auc_mean,fit_time_s,subsample_people
+Logistic regression,"{""C"": 0.001}",0.5675,0.0086,0.5701,5.1727,99999
+Logistic regression,"{""C"": 0.01}",0.5878,0.0072,0.5938,5.4942,99999
+Logistic regression,"{""C"": 0.1}",0.5897,0.0067,0.5988,6.6128,99999
+Logistic regression,"{""C"": 1}",0.588,0.0067,0.5986,7.7597,99999
+Logistic regression,"{""C"": 10}",0.5877,0.0067,0.5985,7.7494,99999
+Decision tree,"{""max_depth"": 6, ""min_samples_leaf"": 20}",0.486,0.0066,0.4908,11.0893,99999
+Decision tree,"{""max_depth"": 6, ""min_samples_leaf"": 50}",0.4883,0.0071,0.4938,10.0051,99999
+Decision tree,"{""max_depth"": 6, ""min_samples_leaf"": 100}",0.4885,0.0075,0.4934,9.9589,99999
+Decision tree,"{""max_depth"": 6, ""min_samples_leaf"": 200}",0.4905,0.0066,0.4938,10.0272,99999
+Decision tree,"{""max_depth"": 10, ""min_samples_leaf"": 20}",0.5306,0.0044,0.5681,12.1274,99999
+Decision tree,"{""max_depth"": 10, ""min_samples_leaf"": 50}",0.5399,0.0042,0.5694,11.8858,99999
+Decision tree,"{""max_depth"": 10, ""min_samples_leaf"": 100}",0.5447,0.0049,0.5665,11.5989,99999
+Decision tree,"{""max_depth"": 10, ""min_samples_leaf"": 200}",0.5449,0.0057,0.5601,11.489,99999
+Decision tree,"{""max_depth"": 14, ""min_samples_leaf"": 20}",0.5352,0.0061,0.6307,12.9303,99999
+Decision tree,"{""max_depth"": 14, ""min_samples_leaf"": 50}",0.5511,0.0069,0.6134,12.6349,99999
+Decision tree,"{""max_depth"": 14, ""min_samples_leaf"": 100}",0.557,0.004,0.5964,12.3055,99999
+Decision tree,"{""max_depth"": 14, ""min_samples_leaf"": 200}",0.5558,0.0072,0.5777,11.806,99999
+Decision tree,"{""max_depth"": 18, ""min_samples_leaf"": 20}",0.5236,0.0087,0.6735,13.9896,99999
+Decision tree,"{""max_depth"": 18, ""min_samples_leaf"": 50}",0.5491,0.0057,0.6308,13.2585,99999
+Decision tree,"{""max_depth"": 18, ""min_samples_leaf"": 100}",0.5575,0.0037,0.6021,12.8132,99999
+Decision tree,"{""max_depth"": 18, ""min_samples_leaf"": 200}",0.5563,0.0071,0.5792,12.2693,99999
+Decision tree,"{""max_depth"": 24, ""min_samples_leaf"": 20}",0.5178,0.0072,0.7001,14.9669,99999
+Decision tree,"{""max_depth"": 24, ""min_samples_leaf"": 50}",0.5473,0.0049,0.6359,14.0121,99999
+Decision tree,"{""max_depth"": 24, ""min_samples_leaf"": 100}",0.5572,0.0039,0.6033,13.5686,99999
+Decision tree,"{""max_depth"": 24, ""min_samples_leaf"": 200}",0.5562,0.007,0.5793,12.6993,99999
+Decision tree,"{""max_depth"": null, ""min_samples_leaf"": 20}",0.5112,0.0066,0.7096,15.5585,99999
+Decision tree,"{""max_depth"": null, ""min_samples_leaf"": 50}",0.5461,0.0051,0.6368,14.3478,99999
+Decision tree,"{""max_depth"": null, ""min_samples_leaf"": 100}",0.5571,0.0039,0.6034,13.2978,99999
+Decision tree,"{""max_depth"": null, ""min_samples_leaf"": 200}",0.5562,0.007,0.5793,11.8383,99999
+Random forest,"{""max_depth"": 20, ""min_samples_leaf"": 1}",0.5925,0.0056,0.8847,48.0717,99999
+Random forest,"{""max_depth"": 20, ""min_samples_leaf"": 5}",0.6002,0.0062,0.7443,46.2491,99999
+Random forest,"{""max_depth"": 20, ""min_samples_leaf"": 20}",0.5917,0.0073,0.6455,44.0547,99999
+Random forest,"{""max_depth"": null, ""min_samples_leaf"": 1}",0.6034,0.0053,1.0,52.5152,99999
+Random forest,"{""max_depth"": null, ""min_samples_leaf"": 5}",0.6044,0.0063,0.8016,47.8616,99999
+Random forest,"{""max_depth"": null, ""min_samples_leaf"": 20}",0.5932,0.0074,0.6518,43.9247,99999
+k-nearest neighbours,"{""n_neighbors"": 25, ""weights"": ""uniform""}",0.5224,0.0082,0.5919,1.1095,19998
+k-nearest neighbours,"{""n_neighbors"": 25, ""weights"": ""distance""}",0.5396,0.0072,1.0,0.9496,19998
+k-nearest neighbours,"{""n_neighbors"": 51, ""weights"": ""uniform""}",0.5268,0.0067,0.5661,0.9786,19998
+k-nearest neighbours,"{""n_neighbors"": 51, ""weights"": ""distance""}",0.5371,0.0061,1.0,0.9287,19998
+k-nearest neighbours,"{""n_neighbors"": 101, ""weights"": ""uniform""}",0.5269,0.0118,0.5497,1.006,19998
+k-nearest neighbours,"{""n_neighbors"": 101, ""weights"": ""distance""}",0.5331,0.0115,1.0,0.9589,19998
+k-nearest neighbours,"{""n_neighbors"": 201, ""weights"": ""uniform""}",0.5236,0.0109,0.5352,0.9456,19998
+k-nearest neighbours,"{""n_neighbors"": 201, ""weights"": ""distance""}",0.528,0.0111,1.0,0.9456,19998
+SVM,"{""C"": 0.3}",0.5755,0.0083,0.6683,57.7289,19998
+SVM,"{""C"": 1}",0.5816,0.0098,0.7704,54.5181,19998
+SVM,"{""C"": 3}",0.5713,0.0103,0.883,55.4142,19998
